@@ -1,0 +1,5 @@
+system_prompt: "ridebooking.txt"
+dot_env_file: ".ride_booking.env"
+voice: 'shimmer'
+turn_detector_flag: False
+initial_message: "Hi, welcome to SwiftRide. I am Allia. How can I help you today?"

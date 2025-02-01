@@ -1,0 +1,5 @@
+system_prompt: "pizza_instructions.txt"
+dot_env_file: ".pizza.env"
+voice: 'nova'
+turn_detector_flag: False
+initial_message: "Hi! This is Meera from Telepizza. How can I help you today?"

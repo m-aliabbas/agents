@@ -1,0 +1,5 @@
+system_prompt: "customer_support.txt"
+dot_env_file: ".customer_support.env"
+voice: 'onyx'
+turn_detector_flag: False
+initial_message: "Hi, welcome to MediaTex. I am Alex. How can I help you today?"

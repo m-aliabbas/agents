@@ -1,0 +1,5 @@
+system_prompt: "HealWell.txt"
+dot_env_file: ".healwell.env"
+voice: 'nova'
+turn_detector_flag: False
+initial_message: "Hi, welcome to HealWell Medical Center. I am Maya. How can I help you today?"
