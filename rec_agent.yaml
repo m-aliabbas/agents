@@ -1,0 +1,5 @@
+system_prompt: "rec_agent.txt"
+dot_env_file: ".rec.env"
+voice: 'shimmer'
+turn_detector_flag: False
+initial_message: "Hi, welcome to Cognitex Ai. I am Meena. How can I help you today?"
