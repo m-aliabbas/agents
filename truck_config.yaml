@@ -1,0 +1,5 @@
+system_prompt: "truck_instructions.txt"
+dot_env_file: ".truck.env"
+voice: 'ash'
+turn_detector_flag: False
+initial_message: "Hi, this is Alex from Swift Dispatch. How are you?"
