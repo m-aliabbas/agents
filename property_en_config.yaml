@@ -1,0 +1,5 @@
+system_prompt: "property_en.txt"
+dot_env_file: ".property_en.env"
+voice: ''
+turn_detector_flag: False
+initial_message: "Hi, It Ahmad from Daani Taameerat. How I can Help you?"
