@@ -1,0 +1,5 @@
+system_prompt: "property.txt"
+dot_env_file: ".property.env"
+voice: ''
+turn_detector_flag: False
+initial_message: "السلام علیکم۔ دانی تعمیرات سے احمد بات کر رہا۔ آپ کی کس طرح مدد کرسکتا ہوں"
