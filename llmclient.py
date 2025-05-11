@@ -50,7 +50,7 @@ from models import (
     TogetherChatModels,
     XAIChatModels,
 )
-from .utils import AsyncAzureADTokenProvider, to_chat_ctx, to_fnc_ctx
+from utils import AsyncAzureADTokenProvider, to_chat_ctx, to_fnc_ctx
 
 
 @dataclass
