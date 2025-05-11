@@ -30,18 +30,29 @@ from livekit.rtc import AudioFrame
 
 import wave
 import asyncio
+from livekit.rtc import AudioFrame
+import wave
+
 async def audio_frame_generator(file_path: str):
     with wave.open(file_path, 'rb') as wf:
-        # Confirm it's mono, 16-bit, 48kHz
-        assert wf.getnchannels() == 1
-        assert wf.getsampwidth() == 2
-        assert wf.getframerate() == 48000
+        # Validate format
+        assert wf.getnchannels() == 1, "Audio must be mono"
+        assert wf.getsampwidth() == 2, "Audio must be 16-bit"
+        assert wf.getframerate() == 48000, "Audio must be 48kHz"
+
+        frame_size = 960  # 20ms of audio at 48kHz
 
         while True:
-            data = wf.readframes(960)  # 960 samples = 20ms at 48kHz
+            data = wf.readframes(frame_size)
             if not data:
                 break
-            yield AudioFrame(data=data)
+            yield AudioFrame(
+                data=data,
+                sample_rate=48000,
+                num_channels=1,
+                samples_per_channel=frame_size
+            )
+
 
 logger = logging.getLogger("basic-agent")
 
