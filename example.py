@@ -19,6 +19,7 @@ from livekit.agents import (
     metrics,
     AudioConfig,
 )
+from livekit.plugins import noise_cancellation
 from livekit import rtc
 from typing import AsyncIterable, Optional
 from livekit.agents.llm import function_tool
@@ -130,10 +131,6 @@ async def entrypoint(ctx: JobContext):
         
     )
    
-
-    
-
-
     logger.info("Agent session created")
 
     # log metrics as they are emitted, and total usage after session is over
@@ -160,15 +157,22 @@ async def entrypoint(ctx: JobContext):
     await session.start(
         agent=MyAgent(room_id=ctx.room.name),
         room=ctx.room,
-        room_input_options=RoomInputOptions(),
+        room_input_options=RoomInputOptions(noise_cancellation=noise_cancellation.BVC()),
         room_output_options=RoomOutputOptions(transcription_enabled=True),
     )
     logger.info("Agent session started")
 
-    # Optional: Add background audio effects
     background_audio = BackgroundAudioPlayer(
-        ambient_sound=AudioConfig(BuiltinAudioClip.OFFICE_AMBIENCE, volume=0.5),
+        # play office ambience sound looping in the background
+        ambient_sound=AudioConfig(BuiltinAudioClip.OFFICE_AMBIENCE, volume=1.0),
+        # play keyboard typing sound when the agent is thinking
+        thinking_sound=[
+            AudioConfig(BuiltinAudioClip.KEYBOARD_TYPING, volume=0.8),
+            AudioConfig(BuiltinAudioClip.KEYBOARD_TYPING2, volume=0.7),
+        ],
     )
+    
+
     await background_audio.start(room=ctx.room, agent_session=session)
 
 
