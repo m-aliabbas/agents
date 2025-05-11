@@ -20,11 +20,28 @@ from livekit.agents import (
 from livekit.agents.llm import function_tool
 from livekit.agents.voice import MetricsCollectedEvent
 from livekit.plugins import deepgram, openai, silero
+from livekit.rtc import AudioFrame
+
 # from livekit.plugins.turn_detector.multilingual import MultilingualModel
 
 # uncomment to enable Krisp background voice/noise cancellation
 # currently supported on Linux and MacOS
 # from livekit.plugins import noise_cancellation
+
+import wave
+import asyncio
+async def audio_frame_generator(file_path: str):
+    with wave.open(file_path, 'rb') as wf:
+        # Confirm it's mono, 16-bit, 48kHz
+        assert wf.getnchannels() == 1
+        assert wf.getsampwidth() == 2
+        assert wf.getframerate() == 48000
+
+        while True:
+            data = wf.readframes(960)  # 960 samples = 20ms at 48kHz
+            if not data:
+                break
+            yield AudioFrame(data=data)
 
 logger = logging.getLogger("basic-agent")
 
@@ -132,7 +149,10 @@ async def entrypoint(ctx: JobContext):
 
     await background_audio.start(room=ctx.room, agent_session=session)
     
-    
+    await session.say(
+            audio=audio_frame_generator("./audio/abc.wav"),
+            add_to_chat_ctx=False  # optional
+        )
 
 if __name__ == "__main__":
     cli.run_app(WorkerOptions(entrypoint_fnc=entrypoint, prewarm_fnc=prewarm))
