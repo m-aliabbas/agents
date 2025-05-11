@@ -24,7 +24,7 @@ from typing import AsyncIterable, Optional
 from livekit.agents.llm import function_tool
 from livekit.agents.voice import MetricsCollectedEvent
 from livekit.plugins import deepgram, openai, silero
-
+from llmclient import LLM
 logger = logging.getLogger("basic-agent")
 from livekit.agents.llm.chat_context import ChatContext, ChatMessage
 # Configure logging for better debug information
@@ -41,7 +41,7 @@ class MyAgent(Agent):
         
         super().__init__(
             instructions="When user says something you reply with the same message.",
-            llm=openai.LLM.with_dummy(),
+            llm=LLM.with_dummy(),
         stt=deepgram.STT(model="nova-3", language="multi"),
         tts=SimpleTTS(),
 
