@@ -40,7 +40,7 @@ from openai.types.chat import (
 )
 from openai.types.chat.chat_completion_chunk import Choice
 
-from .models import (
+from models import (
     CerebrasChatModels,
     ChatModels,
     DeepSeekChatModels,
