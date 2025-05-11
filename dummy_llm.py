@@ -19,12 +19,16 @@ class DummyLLM(llm.LLM):
         conn_options: APIConnectOptions = DEFAULT_API_CONNECT_OPTIONS,
         **kwargs,
     ) -> "DummyStream":
-        # ChatContext is iterable; walk it in reverse to find the last user turn
+        # --------------------------------------------
+        # Safely pull the most‑recent user message
+        # --------------------------------------------
         last_user_text = ""
-        for msg in reversed(list(chat_ctx)):
+        for idx in range(len(chat_ctx) - 1, -1, -1):   # walk backwards
+            msg = chat_ctx[idx]
             if msg.role == "user":
                 last_user_text = msg.content or ""
                 break
+
         return DummyStream(last_user_text, conn_options)
     # -------------------------------------------------------------------- #
 
