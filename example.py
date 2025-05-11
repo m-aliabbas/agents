@@ -150,6 +150,7 @@ async def entrypoint(ctx: JobContext):
     await background_audio.start(room=ctx.room, agent_session=session)
     
     await session.say(
+        text="",
             audio=audio_frame_generator("./audio/abc.wav"),
             add_to_chat_ctx=False  # optional
         )
