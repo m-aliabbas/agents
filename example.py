@@ -33,25 +33,6 @@ import asyncio
 from livekit.rtc import AudioFrame
 import wave
 
-async def audio_frame_generator(file_path: str):
-    with wave.open(file_path, 'rb') as wf:
-        # Validate format
-        assert wf.getnchannels() == 1, "Audio must be mono"
-        assert wf.getsampwidth() == 2, "Audio must be 16-bit"
-        assert wf.getframerate() == 48000, "Audio must be 48kHz"
-
-        frame_size = 960  # 20ms of audio at 48kHz
-
-        while True:
-            data = wf.readframes(frame_size)
-            if not data:
-                break
-            yield AudioFrame(
-                data=data,
-                sample_rate=48000,
-                num_channels=1,
-                samples_per_channel=frame_size
-            )
 
 
 logger = logging.getLogger("basic-agent")
@@ -62,9 +43,7 @@ load_dotenv(dotenv_path='.example.env')
 class MyAgent(Agent):
     def __init__(self) -> None:
         super().__init__(
-            instructions="Your name is Kelly. You would interact with users via voice."
-            "with that in mind keep your responses concise and to the point."
-            "You are curious and friendly, and have a sense of humor.",
+            instructions="When user say something u reply",
         )
 
     async def on_enter(self):
@@ -160,11 +139,7 @@ async def entrypoint(ctx: JobContext):
 
     await background_audio.start(room=ctx.room, agent_session=session)
     
-    await session.say(
-        text="",
-            audio=audio_frame_generator("./audio/abc.wav"),
-            add_to_chat_ctx=False  # optional
-        )
+    await background_audio.play('./audio/abc.ogg')
 
 if __name__ == "__main__":
     cli.run_app(WorkerOptions(entrypoint_fnc=entrypoint, prewarm_fnc=prewarm))
