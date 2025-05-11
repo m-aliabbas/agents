@@ -57,9 +57,9 @@ async def chat_completions(request: Request):
     
     if current_message <= 0:
         predicted_class = "hello"  # Replace with actual classification logic
-    elif current_message == 1:
-        predicted_class = "intro"
     elif current_message == 2:
+        predicted_class = "intro"
+    elif current_message == 3:
         predicted_class = "transfer"
     else:
         print('Falling to Else')
