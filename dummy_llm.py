@@ -1,53 +1,15 @@
-# dummy_llm.py   (only the highlighted lines changed)
-from __future__ import annotations
 import asyncio
-from livekit.agents import llm
-from livekit.agents.llm.chat_context import ChatContext
-from livekit.agents.types import APIConnectOptions, DEFAULT_API_CONNECT_OPTIONS
+import openai
 
+async def main():
+    client = openai.AsyncClient(base_url="http://localhost:8000/v1", api_key="dummy")
 
-class DummyLLM(llm.LLM):
-    def __init__(self, model: str = "dummy-echo") -> None:
-        super().__init__()
-        self._model = model
+    response = await client.chat.completions.create(
+        model="llama3.1",
+        messages=[{"role": "user", "content": "Hello test"}],
+    )
 
-    # --------------------------------- FIX HERE ------------------------- #
-    def chat(
-        self,
-        *,
-        chat_ctx: ChatContext,
-        conn_options: APIConnectOptions = DEFAULT_API_CONNECT_OPTIONS,
-        **kwargs,
-    ) -> "DummyStream":
-        # --------------------------------------------
-        # Safely pull the most‑recent user message
-        # --------------------------------------------
-        last_user_text = ""
-        for idx in range(len(chat_ctx) - 1, -1, -1):   # walk backwards
-            msg = chat_ctx[idx]
-            if msg.role == "user":
-                last_user_text = msg.content or ""
-                break
+    print(response)
 
-        return DummyStream(last_user_text, conn_options)
-    # -------------------------------------------------------------------- #
-
-
-class DummyStream(llm.LLMStream):
-    def __init__(self, reply_text: str, conn_options: APIConnectOptions) -> None:
-        super().__init__(llm=None, chat_ctx=None, tools=[], conn_options=conn_options)
-        self._reply_text = reply_text
-
-    async def _run(self) -> None:
-        chunk = llm.ChatChunk(
-            id="dummy‑echo‑0",
-            delta=llm.ChoiceDelta(role="assistant", content=self._reply_text),
-            usage=llm.CompletionUsage(
-                completion_tokens=len(self._reply_text.split()),
-                prompt_tokens=0,
-                prompt_cached_tokens=0,
-                total_tokens=len(self._reply_text.split()),
-            ),
-        )
-        self._event_ch.send_nowait(chunk)
-        await asyncio.sleep(0)
+if __name__ == "__main__":
+    asyncio.run(main())
