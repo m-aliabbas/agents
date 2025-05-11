@@ -21,7 +21,7 @@ from livekit.agents.llm import function_tool
 from livekit.agents.voice import MetricsCollectedEvent
 from livekit.plugins import deepgram, openai, silero
 from livekit.rtc import AudioFrame
-
+from dummy_llm import DummyLLM 
 # from livekit.plugins.turn_detector.multilingual import MultilingualModel
 
 # uncomment to enable Krisp background voice/noise cancellation
@@ -87,7 +87,7 @@ async def entrypoint(ctx: JobContext):
     session = AgentSession(
         vad=ctx.proc.userdata["vad"],
         # any combination of STT, LLM, TTS, or realtime API can be used
-        llm=openai.LLM(model="gpt-4o-mini"),
+        llm=DummyLLM(),
         stt=deepgram.STT(model="nova-3", language="multi"),
         tts=openai.TTS(voice="ash"),
         # use LiveKit's turn detection model
@@ -125,21 +125,21 @@ async def entrypoint(ctx: JobContext):
         room_output_options=RoomOutputOptions(transcription_enabled=True),
     )
 
-    background_audio = BackgroundAudioPlayer(
-        # play office ambience sound looping in the background
-        ambient_sound=AudioConfig(BuiltinAudioClip.OFFICE_AMBIENCE, volume=1.0),
-        # play keyboard typing sound when the agent is thinking
-        thinking_sound=[
-            AudioConfig(BuiltinAudioClip.KEYBOARD_TYPING, volume=0.8),
-            AudioConfig(BuiltinAudioClip.KEYBOARD_TYPING2, volume=0.7),
-        ],
-    )
+    # background_audio = BackgroundAudioPlayer(
+    #     # play office ambience sound looping in the background
+    #     ambient_sound=AudioConfig(BuiltinAudioClip.OFFICE_AMBIENCE, volume=1.0),
+    #     # play keyboard typing sound when the agent is thinking
+    #     thinking_sound=[
+    #         AudioConfig(BuiltinAudioClip.KEYBOARD_TYPING, volume=0.8),
+    #         AudioConfig(BuiltinAudioClip.KEYBOARD_TYPING2, volume=0.7),
+    #     ],
+    # )
 
     
 
-    await background_audio.start(room=ctx.room, agent_session=session)
+    # await background_audio.start(room=ctx.room, agent_session=session)
     
-    await background_audio.play('./audio/abc.ogg')
+    # await background_audio.play('./audio/abc.ogg')
 
 if __name__ == "__main__":
     cli.run_app(WorkerOptions(entrypoint_fnc=entrypoint, prewarm_fnc=prewarm))
