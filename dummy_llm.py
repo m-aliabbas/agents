@@ -24,12 +24,12 @@ class DummyLLM(llm.LLM):
 
 class DummyLLMStream(llm.LLMStream):
     async def _run(self) -> None:
-        # Fetch chat messages from the context
-        messages = await self._chat_ctx.get_messages()
+        # Use .history for compatibility with older versions of livekit-agents
+        messages = self._chat_ctx.history
         last_user_msg = next((msg for msg in reversed(messages) if msg.role == "user"), None)
         content = last_user_msg.content if last_user_msg else "No user message found."
 
-        # Create and send a ChatChunk that echoes the user message
+        # Echo the user's message back as if from the assistant
         chunk = ChatChunk(
             id="dummy-id",
             delta=ChoiceDelta(role="assistant", content=content),
