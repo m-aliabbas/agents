@@ -89,7 +89,7 @@ async def entrypoint(ctx: JobContext):
         # any combination of STT, LLM, TTS, or realtime API can be used
         llm=openai.LLM(model="gpt-4o-mini"),
         stt=deepgram.STT(model="nova-3", language="multi"),
-        tts=None,
+        tts=openai.TTS(voice="ash"),
         # use LiveKit's turn detection model
         turn_detection=None,
     )
