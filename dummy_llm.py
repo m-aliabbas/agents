@@ -1,4 +1,4 @@
-# dummy_llm.py --------------------------------------------------------------
+# dummy_llm.py   (only the highlighted lines changed)
 from __future__ import annotations
 import asyncio
 from livekit.agents import llm
@@ -7,13 +7,11 @@ from livekit.agents.types import APIConnectOptions, DEFAULT_API_CONNECT_OPTIONS
 
 
 class DummyLLM(llm.LLM):
-    """A no‑op LLM that echoes the most‑recent user message."""
-
     def __init__(self, model: str = "dummy-echo") -> None:
         super().__init__()
         self._model = model
 
-    # LiveKit will call this for every turn
+    # --------------------------------- FIX HERE ------------------------- #
     def chat(
         self,
         *,
@@ -21,10 +19,14 @@ class DummyLLM(llm.LLM):
         conn_options: APIConnectOptions = DEFAULT_API_CONNECT_OPTIONS,
         **kwargs,
     ) -> "DummyStream":
-        last_user_text = next(
-            (m.content for m in reversed(chat_ctx.messages) if m.role == "user"), ""
-        )
+        # ChatContext is iterable; walk it in reverse to find the last user turn
+        last_user_text = ""
+        for msg in reversed(list(chat_ctx)):
+            if msg.role == "user":
+                last_user_text = msg.content or ""
+                break
         return DummyStream(last_user_text, conn_options)
+    # -------------------------------------------------------------------- #
 
 
 class DummyStream(llm.LLMStream):
