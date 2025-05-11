@@ -1,4 +1,3 @@
-# dummy_llm.py
 from livekit.agents import llm
 from livekit.agents.llm.chat_context import ChatContext
 from livekit.agents.llm.tool_context import FunctionTool
@@ -25,9 +24,12 @@ class DummyLLM(llm.LLM):
 
 class DummyLLMStream(llm.LLMStream):
     async def _run(self) -> None:
-        last_user_msg = next((msg for msg in reversed(self._chat_ctx.messages) if msg.role == "user"), None)
+        # Fetch chat messages from the context
+        messages = await self._chat_ctx.get_messages()
+        last_user_msg = next((msg for msg in reversed(messages) if msg.role == "user"), None)
         content = last_user_msg.content if last_user_msg else "No user message found."
 
+        # Create and send a ChatChunk that echoes the user message
         chunk = ChatChunk(
             id="dummy-id",
             delta=ChoiceDelta(role="assistant", content=content),
