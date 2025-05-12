@@ -50,9 +50,9 @@ async def chat_completions(request: Request):
         else:
             current_message = 1
     
-    print('Counter',counter)
+    # print('Counter',counter)
     current_message = counter.get(room_id,1)
-    print(room_id)
+    print(parts)
     model = chat_request.model
     
     if current_message <= 0:
@@ -65,7 +65,7 @@ async def chat_completions(request: Request):
         print('Falling to Else')
         predicted_class = "hello"
 
-    
+    # predicted_class = predicted_class+';ali'
     # STREAMING RESPONSE
     if chat_request.stream:
         async def event_generator():
