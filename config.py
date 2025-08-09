@@ -1,1 +1,1 @@
-SERVER_URI = "http://localhost:8000"
+SERVER_URI = "http://localhost:1031"
